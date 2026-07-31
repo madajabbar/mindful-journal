@@ -1,0 +1,47 @@
+# Null device file (Windows)
+nul
+NUL
+
+# Dart/Flutter generated
+.dart_tool/
+.packages
+build/
+pubspec.lock
+
+# Android
+android/app/src/debug/
+android/app/src/profile/
+android/.gradle/
+android/local.properties
+*.jks
+
+# iOS
+ios/Flutter/
+ios/Pods/
+ios/build/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Environment
+.env
+.env.local
+
+# Firebase
+lib/firebase_options.dart
+android/app/google-services.json
+ios/Runner/GoogleService-Info.plist
+
+# Build outputs
+*.apk
+*.aab
+*.app
