@@ -152,7 +152,7 @@ You are advised to review this Privacy Policy periodically for any changes.
 
 If you have any questions about this Privacy Policy, please contact us:
 
-- **Email**: [your-email@example.com]
+- **Email**: madajabbar22@gmail.com
 - **GitHub**: https://github.com/madajabbar/mindful-journal
 - **Issues**: https://github.com/madajabbar/mindful-journal/issues
 

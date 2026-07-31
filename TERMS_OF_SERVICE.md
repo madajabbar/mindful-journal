@@ -48,7 +48,7 @@ We do NOT claim ownership of your personal journal entries or data.
 
 ## 8. Privacy
 
-Your privacy is important to us. Our Privacy Policy (available at [Privacy Policy URL]) explains how we collect, use, and protect your information. By using the App, you consent to such practices.
+Your privacy is important to us. Our Privacy Policy (available at https://github.com/madajabbar/mindful-journal/blob/main/PRIVACY_POLICY.md) explains how we collect, use, and protect your information. By using the App, you consent to such practices.
 
 ## 9. Subscriptions and Payments
 
@@ -109,7 +109,7 @@ These Terms shall be governed by and construed in accordance with applicable law
 ## 18. Contact Information
 
 For questions about these Terms, contact us at:
-- **Email**: [your-email@example.com]
+- **Email**: madajabbar22@gmail.com
 - **GitHub**: https://github.com/madajabbar/mindful-journal
 
 ## 19. Severability
