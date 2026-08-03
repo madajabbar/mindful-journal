@@ -18,25 +18,30 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   
-  // Initialize Firebase
-  try {
-    await Firebase.initializeApp();
-  } catch (e) {
-    print('Firebase init skipped: $e');
-  }
-  
-  // Initialize AdMob
-  try {
-    await MobileAds.instance.initialize();
-  } catch (e) {
-    print('AdMob init skipped: $e');
-  }
-  
-  // Initialize local database
+  // Initialize local database first (fast, offline)
   await DatabaseService().init();
-  await DatabaseService().syncFromCloud();
   
+  // Launch app immediately — heavy init runs in background
   runApp(const ProviderScope(child: MyApp()));
+  
+  // Background initialization (non-blocking)
+  // Firebase
+  Firebase.initializeApp().then((_) {
+    print('Firebase initialized');
+    // Cloud sync after Firebase ready
+    DatabaseService().syncFromCloud().catchError((e) => print('Cloud sync skipped: $e'));
+  }).catchError((e) {
+    print('Firebase init skipped (offline/no config): $e');
+  });
+  
+  // AdMob — never block startup, add timeout
+  MobileAds.instance.initialize().then((_) {
+    print('AdMob initialized');
+  }).timeout(const Duration(seconds: 5), onTimeout: () {
+    print('AdMob init timeout — will retry later');
+  }).catchError((e) {
+    print('AdMob init skipped: $e');
+  });
 }
 
 class MyApp extends ConsumerWidget {
@@ -54,8 +59,8 @@ class MyApp extends ConsumerWidget {
       themeMode: isDark ? ThemeMode.dark : ThemeMode.light,
       debugShowCheckedModeBanner: false,
       home: authState.when(
-        loading: () => const Scaffold(body: Center(child: CircularProgressIndicator())),
-        error: (_, __) => const HomeScreen(), // Fallback to offline
+        loading: () => const HomeScreen(), // Show app immediately (offline-first)
+        error: (_, __) => const HomeScreen(),
         data: (user) {
           if (user != null) {
             return const HomeScreen();
