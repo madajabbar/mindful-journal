@@ -4,6 +4,7 @@ import 'package:mindful_journal/core/theme/app_theme.dart';
 import 'package:mindful_journal/core/providers/providers.dart';
 import 'package:mindful_journal/services/auth_service.dart';
 import 'package:mindful_journal/services/database_service.dart';
+import 'package:mindful_journal/widgets/ad_banner_widget.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -133,7 +134,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 ],
               ),
             ),
-            const SizedBox(height: 32),
+            const SizedBox(height: 16),
+            // Ad banner at the bottom of settings
+            const AdBannerWidget(),
+            const SizedBox(height: 16),
             Center(
               child: Text(
                 'Made with 💜 for your mental wellness',

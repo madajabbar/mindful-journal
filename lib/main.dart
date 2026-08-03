@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:mindful_journal/core/theme/app_theme.dart';
 import 'package:mindful_journal/core/providers/providers.dart';
 import 'package:mindful_journal/services/database_service.dart';
@@ -21,14 +22,18 @@ void main() async {
   try {
     await Firebase.initializeApp();
   } catch (e) {
-    // Firebase not configured yet, app still works offline
     print('Firebase init skipped: $e');
+  }
+  
+  // Initialize AdMob
+  try {
+    await MobileAds.instance.initialize();
+  } catch (e) {
+    print('AdMob init skipped: $e');
   }
   
   // Initialize local database
   await DatabaseService().init();
-  
-  // Sync from cloud on startup if logged in
   await DatabaseService().syncFromCloud();
   
   runApp(const ProviderScope(child: MyApp()));
