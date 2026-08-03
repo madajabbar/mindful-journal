@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <rect width="1024" height="1024" rx="200" fill="#6C63FF"/>
+  <rect x="262" y="212" width="500" height="600" rx="30" fill="white"/>
+  <rect x="312" y="262" width="400" height="40" rx="10" fill="#E8E6FF"/>
+  <rect x="312" y="322" width="320" height="24" rx="8" fill="#F0F0F0"/>
+  <rect x="312" y="366" width="380" height="24" rx="8" fill="#F0F0F0"/>
+  <rect x="312" y="410" width="350" height="24" rx="8" fill="#F0F0F0"/>
+  <rect x="312" y="454" width="280" height="24" rx="8" fill="#F0F0F0"/>
+  <rect x="312" y="498" width="360" height="24" rx="8" fill="#F0F0F0"/>
+  <rect x="312" y="542" width="300" height="24" rx="8" fill="#F0F0F0"/>
+  <rect x="312" y="620" width="400" height="40" rx="10" fill="#E8E6FF"/>
+  <circle cx="812" cy="762" r="100" fill="#4ECDC4"/>
+  <text x="812" y="800" text-anchor="middle" font-size="100" fill="white">😊</text>
+</svg>

@@ -14,6 +14,8 @@ android/app/src/profile/
 android/.gradle/
 android/local.properties
 *.jks
+*.keystore
+key.properties
 
 # iOS
 ios/Flutter/
