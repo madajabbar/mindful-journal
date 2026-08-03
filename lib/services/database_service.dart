@@ -110,6 +110,14 @@ class DatabaseService {
     }).toList();
   }
   
+  Future<void> updateMoodEntry(MoodEntry entry) async {
+    await _moodBox.put(entry.id, entry);
+  }
+  
+  Future<void> deleteMoodEntry(String id) async {
+    await _moodBox.delete(id);
+  }
+  
   // Habit Operations
   Future<String> addHabit(Habit habit) async {
     await _habitBox.put(habit.id, habit);

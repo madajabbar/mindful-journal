@@ -1,26 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful_journal/core/theme/app_theme.dart';
+import 'package:mindful_journal/core/providers/providers.dart';
+import 'package:mindful_journal/services/database_service.dart';
 import 'package:mindful_journal/features/journal/presentation/journal_screen.dart';
 import 'package:mindful_journal/features/mood/presentation/mood_screen.dart';
 import 'package:mindful_journal/features/habits/presentation/habits_screen.dart';
 import 'package:mindful_journal/features/insights/presentation/insights_screen.dart';
 import 'package:mindful_journal/features/settings/presentation/settings_screen.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  await DatabaseService().init();
   runApp(const ProviderScope(child: MyApp()));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isDark = ref.watch(darkModeProvider);
     return MaterialApp(
       title: 'Mindful Journal',
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeMode.light,
+      themeMode: isDark ? ThemeMode.dark : ThemeMode.light,
       debugShowCheckedModeBanner: false,
       home: const HomeScreen(),
     );
