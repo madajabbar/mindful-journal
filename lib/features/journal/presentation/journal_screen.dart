@@ -87,7 +87,7 @@ class JournalScreen extends ConsumerWidget {
                   ),
                   _buildQuickAddCard(
                     context,
-                    icon: Icons.family_restroom,
+                    icon: Icons.people,
                     title: 'Personal',
                     color: Colors.pink,
                   ),

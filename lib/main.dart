@@ -83,7 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
         items: _navItems,
         backgroundColor: Theme.of(context).colorScheme.surface,
         selectedItemColor: Theme.of(context).colorScheme.primary,
-        unselectedItemColor: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+        unselectedItemColor: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
         showSelectedLabels: true,
         showUnselectedLabels: true,
       ),

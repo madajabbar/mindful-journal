@@ -18,7 +18,7 @@ class HabitsScreen extends ConsumerWidget {
             },
           ),
           IconButton(
-            icon: const Icon(Icons.leaderboard),
+            icon: const Icon(Icons.bar_chart),
             onPressed: () {
               // TODO: Open statistics
             },
