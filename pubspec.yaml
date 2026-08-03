@@ -39,10 +39,11 @@ dependencies:
   share_plus: ^7.2.0
   uuid: ^4.3.0
   
-  # Firebase (Uncomment below to enable cloud sync & auth)
-  # firebase_core: ^2.28.0
-  # firebase_auth: ^4.15.2
-  # cloud_firestore: ^4.17.0
+  # Firebase (Cloud sync & auth)
+  firebase_core: ^2.32.0
+  firebase_auth: ^4.20.0
+  cloud_firestore: ^4.17.5
+  google_sign_in: ^6.2.1
 
 dev_dependencies:
   flutter_test:

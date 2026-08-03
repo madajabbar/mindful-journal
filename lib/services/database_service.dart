@@ -3,6 +3,7 @@ import 'package:path_provider/path_provider.dart';
 import '../data/models/journal_entry.dart';
 import '../data/models/mood_entry.dart';
 import '../data/models/habit.dart';
+import 'firebase_service.dart';
 
 class DatabaseService {
   static final DatabaseService _instance = DatabaseService._internal();
@@ -17,6 +18,8 @@ class DatabaseService {
   late Box<MoodEntry> _moodBox;
   late Box<Habit> _habitBox;
   late Box<Map<dynamic, dynamic>> _settingsBox;
+  
+  final FirebaseService _firebase = FirebaseService();
   
   Future<void> init() async {
     final appDocumentDir = await getApplicationDocumentsDirectory();
@@ -48,6 +51,8 @@ class DatabaseService {
   // Journal Entry Operations
   Future<String> addJournalEntry(JournalEntry entry) async {
     await _journalBox.put(entry.id, entry);
+    // Sync to cloud if logged in
+    _firebase.syncJournalToCloud(entry).catchError((e) => print('Cloud sync error: $e'));
     return entry.id;
   }
   
@@ -77,15 +82,18 @@ class DatabaseService {
   Future<void> updateJournalEntry(JournalEntry entry) async {
     entry.updatedAt = DateTime.now();
     await _journalBox.put(entry.id, entry);
+    _firebase.syncJournalToCloud(entry).catchError((e) => print('Cloud sync error: $e'));
   }
   
   Future<void> deleteJournalEntry(String id) async {
     await _journalBox.delete(id);
+    _firebase.deleteJournalFromCloud(id).catchError((e) => print('Cloud delete error: $e'));
   }
   
   // Mood Entry Operations
   Future<String> addMoodEntry(MoodEntry entry) async {
     await _moodBox.put(entry.id, entry);
+    _firebase.syncMoodToCloud(entry).catchError((e) => print('Cloud sync error: $e'));
     return entry.id;
   }
   
@@ -112,15 +120,18 @@ class DatabaseService {
   
   Future<void> updateMoodEntry(MoodEntry entry) async {
     await _moodBox.put(entry.id, entry);
+    _firebase.syncMoodToCloud(entry).catchError((e) => print('Cloud sync error: $e'));
   }
   
   Future<void> deleteMoodEntry(String id) async {
     await _moodBox.delete(id);
+    _firebase.deleteMoodFromCloud(id).catchError((e) => print('Cloud delete error: $e'));
   }
   
   // Habit Operations
   Future<String> addHabit(Habit habit) async {
     await _habitBox.put(habit.id, habit);
+    _firebase.syncHabitToCloud(habit).catchError((e) => print('Cloud sync error: $e'));
     return habit.id;
   }
   
@@ -134,10 +145,12 @@ class DatabaseService {
   
   Future<void> updateHabit(Habit habit) async {
     await _habitBox.put(habit.id, habit);
+    _firebase.syncHabitToCloud(habit).catchError((e) => print('Cloud sync error: $e'));
   }
   
   Future<void> deleteHabit(String id) async {
     await _habitBox.delete(id);
+    _firebase.deleteHabitFromCloud(id).catchError((e) => print('Cloud delete error: $e'));
   }
   
   // Settings Operations
@@ -196,5 +209,56 @@ class DatabaseService {
     await _moodBox.clear();
     await _habitBox.clear();
     await _settingsBox.clear();
+  }
+  
+  // ===== CLOUD SYNC =====
+  
+  /// Sync all local data to Firebase Firestore
+  Future<void> syncAllToCloud() async {
+    if (!_firebase.isLoggedIn) return;
+    try {
+      await _firebase.syncAllLocalData(
+        journals: _journalBox.values.toList(),
+        moods: _moodBox.values.toList(),
+        habits: _habitBox.values.toList(),
+      );
+    } catch (e) {
+      print('Full sync error: $e');
+    }
+  }
+  
+  /// Download cloud data and merge into local Hive
+  Future<void> syncFromCloud() async {
+    if (!_firebase.isLoggedIn) return;
+    try {
+      // Sync journals
+      final cloudJournals = await _firebase.fetchJournalFromCloud();
+      for (final data in cloudJournals) {
+        final entry = JournalEntry.fromMap(Map<String, dynamic>.from(data));
+        if (!_journalBox.containsKey(entry.id)) {
+          await _journalBox.put(entry.id, entry);
+        }
+      }
+      
+      // Sync moods
+      final cloudMoods = await _firebase.fetchMoodFromCloud();
+      for (final data in cloudMoods) {
+        final entry = MoodEntry.fromMap(Map<String, dynamic>.from(data));
+        if (!_moodBox.containsKey(entry.id)) {
+          await _moodBox.put(entry.id, entry);
+        }
+      }
+      
+      // Sync habits
+      final cloudHabits = await _firebase.fetchHabitsFromCloud();
+      for (final data in cloudHabits) {
+        final habit = Habit.fromMap(Map<String, dynamic>.from(data));
+        if (!_habitBox.containsKey(habit.id)) {
+          await _habitBox.put(habit.id, habit);
+        }
+      }
+    } catch (e) {
+      print('Cloud download error: $e');
+    }
   }
 }
