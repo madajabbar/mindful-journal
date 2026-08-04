@@ -5,6 +5,7 @@ import 'package:uuid/uuid.dart';
 import 'package:mindful_journal/core/theme/app_theme.dart';
 import 'package:mindful_journal/core/providers/providers.dart';
 import 'package:mindful_journal/data/models/journal_entry.dart';
+import 'package:mindful_journal/widgets/ad_banner_widget.dart';
 
 class JournalScreen extends ConsumerWidget {
   const JournalScreen({super.key});
@@ -34,10 +35,17 @@ class JournalScreen extends ConsumerWidget {
               ),
             );
           }
-          return ListView.builder(
-            padding: const EdgeInsets.all(16),
-            itemCount: entries.length,
-            itemBuilder: (context, index) => _buildEntryCard(context, entries[index], ref),
+          return Column(
+            children: [
+              Expanded(
+                child: ListView.builder(
+                  padding: const EdgeInsets.all(16),
+                  itemCount: entries.length,
+                  itemBuilder: (context, index) => _buildEntryCard(context, entries[index], ref),
+                ),
+              ),
+              const AdBannerWidget(),
+            ],
           );
         },
       ),

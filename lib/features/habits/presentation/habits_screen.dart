@@ -4,6 +4,7 @@ import 'package:uuid/uuid.dart';
 import 'package:mindful_journal/core/theme/app_theme.dart';
 import 'package:mindful_journal/core/providers/providers.dart';
 import 'package:mindful_journal/data/models/habit.dart';
+import 'package:mindful_journal/widgets/ad_banner_widget.dart';
 
 class HabitsScreen extends ConsumerStatefulWidget {
   const HabitsScreen({super.key});
@@ -93,6 +94,8 @@ class _HabitsScreenState extends ConsumerState<HabitsScreen> {
                   )
                 else
                   ...active.map((h) => _habitCard(h)),
+                const SizedBox(height: 12),
+                const AdBannerWidget(),
               ],
             ),
           );

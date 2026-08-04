@@ -17,24 +17,31 @@ import 'package:mindful_journal/features/settings/presentation/settings_screen.d
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-  
-  // Initialize local database first (fast, offline)
-  await DatabaseService().init();
-  
-  // Launch app immediately — heavy init runs in background
-  runApp(const ProviderScope(child: MyApp()));
-  
-  // Background initialization (non-blocking)
-  // Firebase
-  Firebase.initializeApp().then((_) {
+
+  // Initialize Firebase BEFORE runApp (with timeout to prevent hang)
+  bool firebaseReady = false;
+  try {
+    await Firebase.initializeApp().timeout(const Duration(seconds: 8));
+    firebaseReady = true;
     print('Firebase initialized');
-    // Cloud sync after Firebase ready
+  } catch (e) {
+    print('Firebase init failed (offline/no config): $e');
+  }
+
+  // Initialize local database (with timeout)
+  try {
+    await DatabaseService().init().timeout(const Duration(seconds: 5));
+    print('Database initialized');
+  } catch (e) {
+    print('Database init failed: $e');
+  }
+
+  // Cloud sync in background (non-blocking)
+  if (firebaseReady) {
     DatabaseService().syncFromCloud().catchError((e) => print('Cloud sync skipped: $e'));
-  }).catchError((e) {
-    print('Firebase init skipped (offline/no config): $e');
-  });
-  
-  // AdMob — never block startup, add timeout
+  }
+
+  // AdMob init in background (non-blocking)
   MobileAds.instance.initialize().then((_) {
     print('AdMob initialized');
   }).timeout(const Duration(seconds: 5), onTimeout: () {
@@ -42,6 +49,9 @@ void main() async {
   }).catchError((e) {
     print('AdMob init skipped: $e');
   });
+
+  // Launch app
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends ConsumerWidget {
@@ -59,7 +69,7 @@ class MyApp extends ConsumerWidget {
       themeMode: isDark ? ThemeMode.dark : ThemeMode.light,
       debugShowCheckedModeBanner: false,
       home: authState.when(
-        loading: () => const HomeScreen(), // Show app immediately (offline-first)
+        loading: () => const HomeScreen(),
         error: (_, __) => const HomeScreen(),
         data: (user) {
           if (user != null) {

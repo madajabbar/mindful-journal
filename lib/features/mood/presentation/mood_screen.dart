@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:mindful_journal/core/theme/app_theme.dart';
 import 'package:mindful_journal/core/providers/providers.dart';
 import 'package:mindful_journal/data/models/mood_entry.dart';
+import 'package:mindful_journal/widgets/ad_banner_widget.dart';
 
 class MoodScreen extends ConsumerStatefulWidget {
   const MoodScreen({super.key});
@@ -83,6 +84,8 @@ class _MoodScreenState extends ConsumerState<MoodScreen> {
                 return Column(children: entries.take(15).map((e) => _entryCard(e)).toList());
               },
             ),
+            const SizedBox(height: 12),
+            const AdBannerWidget(),
           ],
         ),
       ),
